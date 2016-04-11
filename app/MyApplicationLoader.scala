@@ -7,15 +7,7 @@ import play.api.ApplicationLoader.Context
 import play.api.routing._
 import play.api.routing.sird._
 
-sealed case class Article(title: String, body: String)
-
-object ArticleRepository {
-  var repo: List[Article] = List()
-
-  def save(article: Article) = {
-    repo = repo ::: List(article)
-  }
-}
+import models.{Article, ArticleRepository}
 
 class MyApplicationLoader extends ApplicationLoader {
   implicit val articleWrites: Writes[Article] = (
