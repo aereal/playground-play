@@ -10,6 +10,8 @@ object ArticleRepository {
   var lastId: Int = 1
   private var repo: List[Article] = List()
 
+  def all: List[Article] = repo
+
   def save(article: Article): Unit = {
     lastId = article.id
     repo = repo ::: List(article)

@@ -25,7 +25,7 @@ class MyApplicationLoader extends ApplicationLoader {
   def load(context: Context) = new BuiltInComponentsFromContext(context) {
     val router = Router.from {
       case GET(p"/articles.json") => Action {
-        val json = Json.toJson(ArticleRepository.repo)
+        val json = Json.toJson(ArticleRepository.all)
         Ok(json)
       }
 
