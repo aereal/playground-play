@@ -8,7 +8,7 @@ case class Article(
 
 object ArticleRepository {
   var lastId: Int = 1
-  var repo: List[Article] = List()
+  private var repo: List[Article] = List()
 
   def save(article: Article): Unit = {
     lastId = article.id
