@@ -11,11 +11,13 @@ import models.{Article, ArticleRepository}
 
 class MyApplicationLoader extends ApplicationLoader {
   implicit val articleWrites: Writes[Article] = (
+    (JsPath \ "id").write[Int] and
     (JsPath \ "title").write[String] and
     (JsPath \ "body").write[String]
   )(unlift(Article.unapply))
 
   implicit val articleReads: Reads[Article] = (
+    (JsPath \ "id").read[Int] and
     (JsPath \ "title").read[String] and
     (JsPath \ "body").read[String]
   )(Article.apply _)

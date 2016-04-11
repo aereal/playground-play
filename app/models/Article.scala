@@ -1,6 +1,7 @@
 package models
 
 case class Article(
+  id: Int,
   title: String,
   body: String
 )
@@ -9,11 +10,9 @@ object ArticleRepository {
   var lastId: Int = 1
   var repo: List[Article] = List()
 
-  def save(article: Article): Int = {
-    val insertedId = lastId
-    lastId = lastId + 1
+  def save(article: Article): Unit = {
+    lastId = article.id
     repo = repo ::: List(article)
-    insertedId
   }
 
   def resolveById(id: Int): Article = {
