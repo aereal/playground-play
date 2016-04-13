@@ -1,12 +1,10 @@
-import play.api.ApplicationLoader.Context
-import play.api._
+import play.api.{ApplicationLoader, BuiltInComponentsFromContext}
 import play.api.db.slick.DatabaseConfigProvider
 import play.api.db.DatabaseConfig
 import play.api.libs.functional.syntax._
-import play.api.libs.json._
-import play.api.mvc.Results._
-import play.api.mvc._
-import play.api.routing._
+import play.api.libs.json.{Reads, Writes, JsError, JsPath, Json}
+import play.api.mvc.{Action, BodyParsers, Results}
+import play.api.routing.Router
 import play.api.routing.sird._
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
@@ -14,7 +12,6 @@ import slick.driver.JdbcProfile
 import slick.driver.MySQLDriver.api._
 import slick.jdbc.GetResult
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Await
 import scala.concurrent.duration.Duration
 
@@ -37,18 +34,18 @@ class MyApplicationLoader extends ApplicationLoader {
 
   val db = Database.forConfig("mysql-local")
 
-  def load(context: Context) = new BuiltInComponentsFromContext(context) {
+  def load(context: ApplicationLoader.Context) = new BuiltInComponentsFromContext(context) {
     val router = Router.from {
       case GET(p"/articles") => Action.async { implicit request =>
         db.run(
           sql"""SELECT * FROM article""".as[Article]
-        ).map(articles => Json.toJson(articles)).map(json => Ok(json))
+        ).map(articles => Json.toJson(articles)).map(json => Results.Ok(json))
       }
 
       case POST(p"/articles.json") => Action(BodyParsers.parse.json) { implicit request =>
         request.body.validate[Article].fold(
           errors => {
-             BadRequest(Json.obj("ok" -> false, "errors" -> JsError.toJson(errors)))
+             Results.BadRequest(Json.obj("ok" -> false, "errors" -> JsError.toJson(errors)))
           },
           article => {
             Await.result(
@@ -62,7 +59,7 @@ class MyApplicationLoader extends ApplicationLoader {
               ),
               Duration.Inf
             )
-            Ok(Json.obj("ok" -> true))
+            Results.Ok(Json.obj("ok" -> true))
           }
         )
       }
