@@ -30,7 +30,7 @@ class MyApplicationLoader extends ApplicationLoader {
         ).map(articles => Json.toJson(articles)).map(json => Results.Ok(json))
       }
 
-      case POST(p"/articles.json") => Action(BodyParsers.parse.json) { implicit request =>
+      case POST(p"/articles") => Action(BodyParsers.parse.json) { implicit request =>
         request.body.validate[Article].fold(
           errors => {
              Results.BadRequest(Json.obj("ok" -> false, "errors" -> JsError.toJson(errors)))
