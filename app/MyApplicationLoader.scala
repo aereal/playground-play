@@ -1,8 +1,7 @@
 import play.api.{ApplicationLoader, BuiltInComponentsFromContext}
 import play.api.db.slick.DatabaseConfigProvider
 import play.api.db.DatabaseConfig
-import play.api.libs.functional.syntax._
-import play.api.libs.json.{Reads, Writes, JsError, JsPath, Json}
+import play.api.libs.json.{JsError, Json}
 import play.api.mvc.{Action, BodyParsers, Results}
 import play.api.routing.Router
 import play.api.routing.sird._
@@ -16,20 +15,9 @@ import scala.concurrent.Await
 import scala.concurrent.duration.Duration
 
 import models.Article
+import deary.dto.Article.Json._
 
 class MyApplicationLoader extends ApplicationLoader {
-  implicit val articleWrites: Writes[Article] = (
-    (JsPath \ "id").write[Int] and
-    (JsPath \ "title").write[String] and
-    (JsPath \ "body").write[String]
-  )(unlift(Article.unapply))
-
-  implicit val articleReads: Reads[Article] = (
-    (JsPath \ "id").read[Int] and
-    (JsPath \ "title").read[String] and
-    (JsPath \ "body").read[String]
-  )(Article.apply _)
-
   implicit val GetArticleResult = GetResult(r => Article(r.<<, r.<<, r.<<))
 
   val db = Database.forConfig("mysql-local")
