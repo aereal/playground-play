@@ -1,4 +1,4 @@
-package models
+package deary.models
 
 import scala.collection.immutable.Seq
 

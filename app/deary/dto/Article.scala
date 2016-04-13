@@ -1,6 +1,6 @@
 package deary.dto
 
-import models.{Article => ArticleEntity}
+import deary.models.{Article => ArticleEntity}
 
 object Article {
   object Json {

@@ -14,8 +14,8 @@ import slick.jdbc.GetResult
 import scala.concurrent.Await
 import scala.concurrent.duration.Duration
 
-import models.Article
 import deary.dto.Article.Json._
+import deary.models.Article
 
 class MyApplicationLoader extends ApplicationLoader {
   implicit val GetArticleResult = GetResult(r => Article(r.<<, r.<<, r.<<))
