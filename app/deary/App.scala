@@ -4,7 +4,7 @@ import slick.driver.JdbcProfile
 import slick.backend.DatabaseConfig
 
 import deary.models.{ArticleServiceComponent, ArticleRepositoryComponent}
-import deary.models.DBComponent
+import deary.infra.db.DBComponent
 
 trait App extends ArticleServiceComponent with ArticleRepositoryComponent with DBComponent[JdbcProfile] {
   val articleRepository = new ArticleRepository

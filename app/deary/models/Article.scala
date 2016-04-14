@@ -2,11 +2,11 @@ package deary.models
 
 import scala.collection.immutable.Seq
 
-import slick.backend.DatabaseConfig
 import slick.driver.JdbcProfile
 import slick.driver.MySQLDriver.api._
-import slick.profile.BasicProfile
 import slick.jdbc.GetResult
+
+import deary.infra.db.DBComponent
 
 case class Article(
   id: Int,
@@ -64,10 +64,4 @@ trait ArticleRepositoryComponent {
       )
     }
   }
-}
-
-trait DBComponent[P <: BasicProfile] {
-  val dbConfig: DatabaseConfig[P]
-
-  def db = dbConfig.db
 }
