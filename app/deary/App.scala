@@ -3,7 +3,7 @@ package deary
 import slick.driver.JdbcProfile
 import slick.backend.DatabaseConfig
 
-import deary.models.ArticleServiceComponent
+import deary.service.ArticleServiceComponent
 import deary.infra.db.DBComponent
 import deary.repository.{ArticleComponent => ArticleRepositoryComponent}
 
