@@ -2,21 +2,28 @@ package deary.service
 
 import scala.collection.immutable.Seq
 
-import deary.repository.{ArticleComponent => ArticleRepositoryComponent}
+import deary.repository.{MixinArticleRepository, UsesArticleRepository}
 import deary.models.Article
 
-trait ArticleServiceComponent {
-  self: ArticleRepositoryComponent =>
+trait ArticleService extends UsesArticleRepository {
+  def write(title: String, body: String): Unit
+  def findAll: Seq[Article]
+}
 
+trait UsesArticleService {
   val articleService: ArticleService
+}
 
-  class ArticleService {
-    def write(title: String, body: String): Unit = {
-      val id = 1
-      articleRepository.save(Article(id, title, body))
-    }
-
-    def findAll: Seq[Article] =
-      articleRepository.all
+object ArticleService extends ArticleService with MixinArticleRepository {
+  def write(title: String, body: String): Unit = {
+    val id = 1
+    articleRepository.save(Article(id, title, body))
   }
+
+  def findAll: Seq[Article] =
+    articleRepository.all
+}
+
+trait MixinArticleService {
+  val articleService = ArticleService
 }
