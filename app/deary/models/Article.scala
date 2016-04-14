@@ -2,30 +2,72 @@ package deary.models
 
 import scala.collection.immutable.Seq
 
+import slick.backend.DatabaseConfig
+import slick.driver.JdbcProfile
+import slick.driver.MySQLDriver.api._
+import slick.profile.BasicProfile
+import slick.jdbc.GetResult
+
 case class Article(
   id: Int,
   title: String,
   body: String
 )
 
-object ArticleRepository extends Seq[Article] {
-  var lastId: Int = 1
-  private var repo: List[Article] = List()
+trait ArticleServiceComponent {
+  self: ArticleRepositoryComponent =>
 
-  def apply(idx: Int) = repo(idx)
+  val articleService: ArticleService
 
-  def length = repo.length
+  class ArticleService {
+    def write(title: String, body: String): Unit = {
+      val id = 1
+      articleRepository.save(Article(id, title, body))
+    }
 
-  def iterator: Iterator[Article] = repo.toIterator
-
-  def all: List[Article] = repo
-
-  def save(article: Article): Unit = {
-    lastId = article.id
-    repo = repo ::: List(article)
+    def findAll: Seq[Article] =
+      articleRepository.all
   }
+}
 
-  def resolveById(id: Int): Article = {
-    repo(id - 1)
+trait ArticleRepositoryComponent {
+  self: DBComponent[JdbcProfile] =>
+
+  val articleRepository: ArticleRepository
+
+  implicit val GetArticleResult = GetResult(r => Article(r.<<, r.<<, r.<<))
+
+  class ArticleRepository {
+    import scala.concurrent.Await
+    import scala.concurrent.duration.Duration
+
+    def all = {
+      Await.result(
+        db.run(
+          sql"""SELECT * FROM article""".as[Article]
+        ),
+        Duration.Inf
+      )
+    }
+
+    def save(article: Article) = {
+      Await.result(
+        db.run(
+          sqlu"""
+            INSERT article
+            SET
+              title = ${article.title},
+              body = ${article.body}
+          """
+        ),
+        Duration.Inf
+      )
+    }
   }
+}
+
+trait DBComponent[P <: BasicProfile] {
+  val dbConfig: DatabaseConfig[P]
+
+  def db = dbConfig.db
 }
