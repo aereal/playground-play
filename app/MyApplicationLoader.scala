@@ -1,12 +1,11 @@
 import play.api.{ApplicationLoader, BuiltInComponentsFromContext}
-import play.api.db.slick.DatabaseConfigProvider
-import play.api.db.DatabaseConfig
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc.{Action, BodyParsers, Results}
 import play.api.routing.Router
 import play.api.routing.sird._
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
+import slick.backend.DatabaseConfig
 import slick.driver.JdbcProfile
 import slick.driver.MySQLDriver.api._
 import slick.jdbc.GetResult
@@ -20,7 +19,9 @@ import deary.models.Article
 class MyApplicationLoader extends ApplicationLoader {
   implicit val GetArticleResult = GetResult(r => Article(r.<<, r.<<, r.<<))
 
-  val db = Database.forConfig("mysql-local")
+  val dbConfig = DatabaseConfig.forConfig[JdbcProfile]("mysql-local")
+
+  def db = dbConfig.db
 
   def load(context: ApplicationLoader.Context) = new BuiltInComponentsFromContext(context) {
     val router = Router.from {

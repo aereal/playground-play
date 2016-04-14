@@ -11,7 +11,7 @@ libraryDependencies ++= Seq(
   cache,
   ws,
   "org.scalatestplus.play" %% "scalatestplus-play" % "1.5.0-RC1" % Test,
-  "com.typesafe.play" %% "play-slick" % "2.0.0",
+  "com.typesafe.slick" %% "slick" % "3.1.1",
   "mysql" % "mysql-connector-java" % "5.1.35",
   "org.slf4j" % "slf4j-nop" % "1.6.4",
   "com.zaxxer" % "HikariCP" % "2.4.5",
