@@ -10,17 +10,15 @@ import slick.driver.MySQLDriver.api._
 import scala.concurrent.{Await, Future}
 import scala.concurrent.duration.Duration
 
-import deary.App
 import deary.dto.Article.Json._
 import deary.models.Article
 
-class MyApplicationLoader extends ApplicationLoader with App {
+import controllers.Controllers
+
+class MyApplicationLoader extends ApplicationLoader with Controllers {
   def load(context: ApplicationLoader.Context) = new BuiltInComponentsFromContext(context) {
     val router = Router.from {
-      case GET(p"/articles") => Action{ implicit request =>
-        val articles = articleService.findAll
-        Results.Ok(Json.toJson(articles))
-      }
+      case GET(p"/articles") => { articlesController.index }
 
       case POST(p"/articles") => Action(BodyParsers.parse.json) { implicit request =>
         request.body.validate[Article].fold(
