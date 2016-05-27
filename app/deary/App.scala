@@ -3,12 +3,9 @@ package deary
 import slick.driver.JdbcProfile
 import slick.backend.DatabaseConfig
 
-import deary.service.ArticleServiceComponent
-import deary.infra.db.DBComponent
-import deary.repository.{ArticleComponent => ArticleRepositoryComponent}
+import deary.service.MixinArticleService
+import deary.infra.db.MixinDB
+import deary.repository.MixinArticleRepository
 
-trait App extends ArticleServiceComponent with ArticleRepositoryComponent with DBComponent[JdbcProfile] {
-  val articleRepository = new ArticleRepository
-  val articleService = new ArticleService
-  val dbConfig = DatabaseConfig.forConfig[JdbcProfile]("mysql-local")
+trait App extends MixinArticleService with MixinArticleRepository with MixinDB {
 }
